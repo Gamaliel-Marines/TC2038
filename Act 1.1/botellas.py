@@ -33,9 +33,6 @@
 # la libreria math, la cual contiene la
 # constante pi.
 #
-# Para poder ejecutar el programa se debe
-# de ejecutar el siguiente comando:
-# python3 refresco.py
 # =============================================
 # _____________________________________________
 
