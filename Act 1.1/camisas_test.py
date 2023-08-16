@@ -1,4 +1,3 @@
-
 import random
 import unittest
 
@@ -20,10 +19,21 @@ def totalCamisas():
 # Test cases para camisas.py
 class TestCamisas(unittest.TestCase):
     
-    def test_totalCamisas(self):
+    def test_totalCamisas1(self):
+        dias, suma = totalCamisas()
+        self.assertTrue(suma >= TOTAL_CAMISAS)
+        
+    def test_totalCamisas2(self):
+        dias, suma = totalCamisas()
+        self.assertTrue(suma >= TOTAL_CAMISAS)
+        
+    def test_totalCamisas3(self):
+        dias, suma = totalCamisas()
+        self.assertTrue(suma >= TOTAL_CAMISAS)
+        
+    def test_totalCamisas4(self):
         dias, suma = totalCamisas()
         self.assertTrue(suma >= TOTAL_CAMISAS)
 
-# Ejecutamos los tests
 if __name__ == "__main__":
     unittest.main()

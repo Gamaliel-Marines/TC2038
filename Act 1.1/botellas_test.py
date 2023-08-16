@@ -1,4 +1,3 @@
-
 import math
 import unittest
 
@@ -15,12 +14,17 @@ def llenarRefresco(radioBase, altura):
 # Test cases para botellas.py
 class TestBotellas(unittest.TestCase):
     
-    def test_volumenContenedor(self):
+    def test_volumenContenedor1(self):
         self.assertAlmostEqual(volumenContenedor(2, 10), math.pi * 2 ** 2 * 10)
         
-    def test_llenarRefresco(self):
+    def test_volumenContenedor2(self):
+        self.assertAlmostEqual(volumenContenedor(1, 5), math.pi * 1 ** 2 * 5)
+        
+    def test_llenarRefresco1(self):
         self.assertAlmostEqual(llenarRefresco(2, 10), (math.pi * 2 ** 2 * 10) / 0.5)
+        
+    def test_llenarRefresco2(self):
+        self.assertAlmostEqual(llenarRefresco(1, 5), (math.pi * 1 ** 2 * 5) / 0.5)
 
-# Ejecutamos los tests
 if __name__ == "__main__":
     unittest.main()
