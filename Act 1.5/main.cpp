@@ -4,11 +4,10 @@
 using namespace std;
 
 
+
+
 void calculateChange(int change, int bills[], int n)
 {
-    
-    
-
 }
 
 int returnChange(int p, int q, int bills[], int n)
