@@ -1,0 +1,11 @@
+Greedy Algorithm
+3 -> 50
+1 -> 25
+0 -> 10
+0 -> 5
+
+Dynamic Programming
+3 -> 50
+1 -> 25
+0 -> 10
+0 -> 5
