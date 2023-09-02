@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @author Daniel Hurtado - A01707774
- * @author Carlos Velazco -
+ * @author Carlos Velasco - A01708634
  * @author Gamaliel Marines - 
  * @brief 
  * @version 0.1
@@ -43,6 +43,7 @@ Example output:
 #include <climits>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -103,6 +104,34 @@ vector<int> coinChangeGreedy(int amount, vector<int>& coins) {
 }
 
 /**
+ * @brief Function that compares to files to see if they are equal
+ * 
+ * @param file1 
+ * @param file2 
+ * @return true 
+ * @return false 
+ * @complexity O(n)
+ */
+bool compareFiles(const string& fileName1, const string& fileName2) {
+    ifstream file1(fileName1);
+    ifstream file2(fileName2);
+    
+    if (!file1.is_open() || !file2.is_open()) {
+        cerr << "Error: Couldn't open one of the files for comparison." << endl;
+        return false;
+    }
+    
+    string line1, line2;
+    while (getline(file1, line1) && getline(file2, line2)) {
+        if (line1 != line2) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  * @brief Main function
  * 
  * @return int 
@@ -110,6 +139,7 @@ vector<int> coinChangeGreedy(int amount, vector<int>& coins) {
  */
 
 int main() {
+    int counter = 0;
     for (int fileNum = 1; fileNum <= 4; ++fileNum) {
         ifstream inFile("inputs/input" + to_string(fileNum) + ".txt");
         ofstream outFile("outputs/output" + to_string(fileNum) + ".txt");
@@ -151,6 +181,15 @@ int main() {
 
         inFile.close();
         outFile.close();
+
+        // Compare the output file with the test case file
+        string testFileName = "test_cases/test" + to_string(fileNum) + ".txt";
+        if (compareFiles("outputs/output" + to_string(fileNum) + ".txt", testFileName)) {
+            counter++;
+            cout << "Test case " << fileNum << " passed. (" << counter << "/4) ✅"<< endl;
+        } else {
+            cout << "Test case " << fileNum << " failed. (" << counter << "/4) ❌"<< endl;
+        }
     }
 
     return 0;
