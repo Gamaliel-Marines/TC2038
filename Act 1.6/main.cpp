@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
+
+using namespace std;
 
 
 
@@ -44,10 +47,6 @@ void createLaberinth(int n, int m){
     
 }
 
-void findPath()
-{
-
-}
 
 int main()
 {
