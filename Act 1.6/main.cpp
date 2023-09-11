@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @authors Daniel Hurtaodo (A01707774)
+ * @authors Daniel Hurtaodo (A01707774), Gamaliel Marines (A017087467), Carlos Velasco
  * @brief Maze solver using backtracking and branch and bound
  * @version 0.1
  * @date 2023-09-10
