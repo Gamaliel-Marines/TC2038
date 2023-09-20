@@ -18,6 +18,13 @@
 
 using namespace std;
 
+/**
+ * @brief Reads a maze from a file and returns a matrix of integers
+ * 
+ * @param filepath 
+ * @return vector< vector<int> > 
+ * @complexity O(N*M)
+ */
 vector< vector<int> > readMaze(const string& filepath) {
     ifstream file(filepath.c_str());
     if (!file) {
@@ -37,6 +44,13 @@ vector< vector<int> > readMaze(const string& filepath) {
     return maze;
 }
 
+/**
+ * @brief  Writes a maze solution to a file
+ * 
+ * @param solution 
+ * @param filepath 
+ * @complexity O(N*M)
+ */
 void writeSolution(const vector< vector<int> >& solution, const string& filepath) {
     ofstream file(filepath.c_str());
 
@@ -48,10 +62,31 @@ void writeSolution(const vector< vector<int> >& solution, const string& filepath
     }
 }
 
+/**
+ * @brief Computes the Manhattan distance between two points.
+ * 
+ * @param x1 
+ * @param y1 
+ * @param x2 
+ * @param y2 
+ * @return int 
+ * @complexity O(1)
+ */
 int manhattanDistance(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
+/**
+ * @brief Solves the maze using the backtracking algorithm.
+ * 
+ * @param maze 
+ * @param solution 
+ * @param x 
+ * @param y 
+ * @return true 
+ * @return false 
+ * @complexity O(4^(N*M))
+ */
 bool solveUsingBacktracking(const vector< vector<int> >& maze, vector< vector<int> >& solution, int x, int y) {
     int M = maze.size();
     int N = maze[0].size();
@@ -76,6 +111,15 @@ bool solveUsingBacktracking(const vector< vector<int> >& maze, vector< vector<in
     return false;
 }
 
+/**
+ * @brief Solves the maze using the branch and bound algorithm. 
+ * 
+ * @param maze 
+ * @param solution 
+ * @return true 
+ * @return false 
+ * @complexity O(N * M * log(N * M))
+ */
 bool solveUsingBranchAndBound(const vector<vector<int> >& maze, vector<vector<int> >& solution) {
     int M = maze.size();
     int N = maze[0].size();
@@ -138,7 +182,12 @@ bool solveUsingBranchAndBound(const vector<vector<int> >& maze, vector<vector<in
 
     return false;
 }
-
+/**
+ * @brief Main Function
+ * 
+ * @return int 
+ * @complexity O(N*log(N))
+ */
 int main() {
     for (int i = 1; i <= 4; ++i) {
         // Leer el laberinto desde un archivo
