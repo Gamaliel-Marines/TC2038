@@ -54,6 +54,9 @@ string calcularHash(const string& filename, int n) {
 
     file.close();
 
+    imprimirContenidoArchivo(filename);
+    cout<<endl;
+
     stringstream hash_stream;
     for (int i = 0; i < n; ++i) {
         hash_stream << setw(2) << setfill('0') << hex << (column_sums[i] % 256);
@@ -80,9 +83,6 @@ int main() {
     }
 
     string hash = calcularHash(filename, n);
-    cout<<endl;
-
-    imprimirContenidoArchivo(filename);
     cout << endl;
 
     mostrarMensaje("Hash calculado: " + hash);
