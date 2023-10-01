@@ -84,8 +84,17 @@ def main():
     mcode_dir = 'input/mcode'
     transmission_dir = 'input/transmission'
     
-    mcodes = [read_file(os.path.join(mcode_dir, f'mcode0{i}.txt')) for i in range(1, 4)]
-    transmissions = [read_file(os.path.join(transmission_dir, f'transmission0{i}.txt')) for i in range(1, 3)]
+    mcodes = []
+    for i in range(1, 64):
+        content = read_file(os.path.join(mcode_dir, f'mcode0{i}.txt'))
+        if content is not None:
+            mcodes.append(content)
+            
+    transmissions = []
+    for i in range(1, 63):
+        content = read_file(os.path.join(transmission_dir, f'transmission0{i}.txt'))
+        if content is not None:
+            transmissions.append(content)
     
     for j, transmission in enumerate(transmissions, start=1):
         print(f"{j}. Transmission{j} {'-'*18}\n")
@@ -96,12 +105,18 @@ def main():
                     print(f"mcode{i}\n(true) Posicion inicial: {start_position} Posicion final: {end_position}\n")
             else:
                 print(f"mcode{i}\n(false) Cadena no encontrada en la transmission\n")
-        
+
+            if longest_palindrome(transmission):
+                print(f"Longest Palindrome: {longest_palindrome(transmission)}\n")
+
     lcs_start1, lcs_end1 = longest_common_substring(transmissions[0], transmissions[1])
     if lcs_start1 is None:
         print("no se encontro ningun substring compartido entre ambas transmisiones")
     else:
-        print(f"Longest Common Substring: {lcs_start1 + 1} {lcs_end1 + 1}")
+        print(f"Longest Common Substring: {lcs_start1} {lcs_end1}")
+
+if __name__ == '__main__':
+    main()
 
 if __name__ == '__main__':
     main()
