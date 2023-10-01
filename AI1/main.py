@@ -8,21 +8,19 @@
 # Importar librerias
 import os
 
+# Complejidad: O(n) donde n es el numero de caracteres en el archivo
+
 
 def read_file(filepath):
     if not os.path.exists(filepath):
         print(f"Error: El archivo {filepath} no existe.")
         return None
-    with open(filepath, 'r') as file:
+    with open(filepath, "r") as file:
         return file.read()
 
 
-def check_mcode_in_transmission(mcode, transmission):
-    position = transmission.find(mcode)
-    if position != -1:
-        end_position = position + len(mcode) - 1
-        return True, position, end_position
-    return False, None, None
+# Complejidad: O(n * m) donde n es el numero de caracteres en el archivo y m es el numero de caracteres en el mcode
+
 
 def find_all_occurrences(mcode, transmission):
     start = 0
@@ -38,11 +36,14 @@ def find_all_occurrences(mcode, transmission):
     return positions
 
 
+# Complejidad: O(m * n) donde m es el numero de caracteres en la primera cadena y n es el numero de caracteres en la segunda cadena
+
+
 def longest_common_substring(s1, s2):
     m, n = len(s1), len(s2)
     dp = [[0] * (n + 1) for _ in range(m + 1)]
     end, max_length = 0, 0
-    
+
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             if s1[i - 1] == s2[j - 1]:
@@ -54,13 +55,17 @@ def longest_common_substring(s1, s2):
         return None, None
     return end - max_length + 1, end
 
+
+# Complejidad: O(n^2) donde n es el numero de caracteres en la cadena
+
+
 def longest_palindrome(s):
     # Esta función retorna el inicio y el final del palíndromo más largo en 's'
     max_len = 1
     start = 0
     for i in range(1, len(s)):
         # Buscar palíndromos de longitud par
-        low, high = i-1, i
+        low, high = i - 1, i
         while low >= 0 and high < len(s) and s[low] == s[high]:
             if high - low + 1 > max_len:
                 start = low
@@ -69,7 +74,7 @@ def longest_palindrome(s):
             high += 1
 
         # Buscar palíndromos de longitud impar
-        low, high = i-1, i+1
+        low, high = i - 1, i + 1
         while low >= 0 and high < len(s) and s[low] == s[high]:
             if high - low + 1 > max_len:
                 start = low
@@ -81,28 +86,30 @@ def longest_palindrome(s):
 
 
 def main():
-    mcode_dir = 'input/mcode'
-    transmission_dir = 'input/transmission'
-    
+    mcode_dir = "input/mcode"
+    transmission_dir = "input/transmission"
+
     mcodes = []
     for i in range(1, 64):
-        content = read_file(os.path.join(mcode_dir, f'mcode0{i}.txt'))
+        content = read_file(os.path.join(mcode_dir, f"mcode0{i}.txt"))
         if content is not None:
             mcodes.append(content)
-            
+
     transmissions = []
     for i in range(1, 63):
-        content = read_file(os.path.join(transmission_dir, f'transmission0{i}.txt'))
+        content = read_file(os.path.join(transmission_dir, f"transmission0{i}.txt"))
         if content is not None:
             transmissions.append(content)
-    
+
     for j, transmission in enumerate(transmissions, start=1):
         print(f"{j}. Transmission{j} {'-'*18}\n")
         for i, mcode in enumerate(mcodes, start=1):
             occurrences = find_all_occurrences(mcode, transmission)
             if occurrences:
                 for start_position, end_position in occurrences:
-                    print(f"mcode{i}\n(true) Posicion inicial: {start_position} Posicion final: {end_position}\n")
+                    print(
+                        f"mcode{i}\n(true) Posicion inicial: {start_position} Posicion final: {end_position}\n"
+                    )
             else:
                 print(f"mcode{i}\n(false) Cadena no encontrada en la transmission\n")
 
@@ -115,8 +122,6 @@ def main():
     else:
         print(f"Longest Common Substring: {lcs_start1} {lcs_end1}")
 
-if __name__ == '__main__':
-    main()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
