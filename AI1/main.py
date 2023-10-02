@@ -86,34 +86,23 @@ def longest_palindrome(s):
 
 
 def main():
-    mcode_dir = "input/mcode"
-    transmission_dir = "input/transmission"
-
-    mcodes = []
-    for i in range(1, 64):
-        content = read_file(os.path.join(mcode_dir, f"mcode0{i}.txt"))
-        if content is not None:
-            mcodes.append(content)
-
-    transmissions = []
-    for i in range(1, 63):
-        content = read_file(os.path.join(transmission_dir, f"transmission0{i}.txt"))
-        if content is not None:
-            transmissions.append(content)
-
+    mcode_dir = 'input/mcode'
+    transmission_dir = 'input/transmission'
+    
+    mcodes = [read_file(os.path.join(mcode_dir, f'mcode0{i}.txt')) for i in range(1, 4)] # Ajustar el rango de acuerdo al numero de mcodes
+    transmissions = [read_file(os.path.join(transmission_dir, f'transmission0{i}.txt')) for i in range(1, 3)] # Ajustar el rango de acuerdo al numero de transmisiones
+    
     for j, transmission in enumerate(transmissions, start=1):
         print(f"{j}. Transmission{j} {'-'*18}\n")
         for i, mcode in enumerate(mcodes, start=1):
             occurrences = find_all_occurrences(mcode, transmission)
             if occurrences:
                 for start_position, end_position in occurrences:
-                    print(
-                        f"mcode{i}\n(true) Posicion inicial: {start_position} Posicion final: {end_position}\n"
-                    )
+                    print(f"mcode{i}\n(true) Posicion inicial: {start_position} Posicion final: {end_position}\n")
             else:
                 print(f"mcode{i}\n(false) Cadena no encontrada en la transmission\n")
 
-            if longest_palindrome(transmission):
+        if longest_palindrome(transmission):
                 print(f"Longest Palindrome: {longest_palindrome(transmission)}\n")
 
     lcs_start1, lcs_end1 = longest_common_substring(transmissions[0], transmissions[1])
