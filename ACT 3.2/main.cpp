@@ -1,10 +1,25 @@
+/**
+ * @file main.cpp
+ * @authors Daniel Hurtaodo (A01707774), Gamaliel Marines (A017087467), Carlos Velazco (A01708428)
+ * @brief Programa que implementa los algoritmos de Dijkstra y Floyd-Warshall para encontrar las distancias más cortas entre todos los pares de nodos de un grafo.
+ * @version 0.1
+ * @date 2023-10-22
+ * @c g++ -std=c++11 -o main main.cpp
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #include <iostream>
 #include <vector>
 #include <climits>
 
 using namespace std;
 
-// Función para imprimir la matriz de distancias
+/**
+ * @brief Imprime una matriz. Si un valor es igual a INT_MAX, se imprime como "INF".
+ * @param matrix Matriz a imprimir.
+ */
+
 void printMatrix(vector<vector<int>> &matrix) {
     for (const auto &row : matrix) {
         for (int dist : row) {
@@ -18,7 +33,20 @@ void printMatrix(vector<vector<int>> &matrix) {
     }
 }
 
-// Algoritmo de Dijkstra
+/**
+ * @brief Implementación del algoritmo de Dijkstra.
+ * 
+ * Encuentra el camino más corto desde un nodo origen 'src' a todos los otros nodos en un grafo.
+ * 
+ * @param graph Matriz de adyacencia del grafo.
+ * @param n Número de nodos en el grafo.
+ * @param src Nodo origen.
+ * 
+ * @return No retorna valor, pero imprime las distancias desde el nodo origen a todos los otros nodos.
+ * 
+ * @note Complejidad: O(n^2)
+ */
+
 void dijkstra(vector<vector<int>> &graph, int n, int src) {
     vector<int> dist(n, INT_MAX);
     vector<bool> visited(n, false);
@@ -50,7 +78,19 @@ void dijkstra(vector<vector<int>> &graph, int n, int src) {
     }
 }
 
-// Algoritmo de Floyd-Warshall
+/**
+ * @brief Implementación del algoritmo de Floyd-Warshall.
+ * 
+ * Encuentra la distancia más corta entre todos los pares de nodos en un grafo.
+ * 
+ * @param graph Matriz de adyacencia del grafo.
+ * @param n Número de nodos en el grafo.
+ * 
+ * @return No retorna valor, pero imprime la matriz de distancias entre todos los pares de nodos.
+ * 
+ * @note Complejidad: O(n^3)
+ */
+
 void floydWarshall(vector<vector<int>> &graph, int n) {
     vector<vector<int>> dist(graph);
 
@@ -69,6 +109,14 @@ void floydWarshall(vector<vector<int>> &graph, int n) {
     cout << "Floyd:" << endl;
     printMatrix(dist);
 }
+
+/**
+ * @brief Punto de entrada principal.
+ * 
+ * Solicita al usuario la matriz de adyacencia del grafo y ejecuta los algoritmos de Dijkstra y Floyd-Warshall.
+ * 
+ * @return 0 si la ejecución fue exitosa.
+ */
 
 int main() {
     int n;
