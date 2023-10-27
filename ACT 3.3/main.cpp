@@ -4,7 +4,16 @@
 
 using namespace std;
 
-// Función para resolver el problema de la mochila y calcular el beneficio óptimo
+/**
+ * @brief Función para resolver el problema de la mochila y calcular el beneficio óptimo
+ * 
+ * @complexity O(N * M)
+ * @param N 
+ * @param beneficios 
+ * @param pesos 
+ * @param W 
+ * @return int 
+ */
 int knapsack(int N, vector<int> beneficios, vector<int> pesos, int W) {
     // Crear una matriz dp para almacenar los valores óptimos
     vector<vector<int>> dp(N + 1, vector<int>(W + 1, 0));
@@ -35,6 +44,12 @@ int knapsack(int N, vector<int> beneficios, vector<int> pesos, int W) {
     return dp[N][W];
 }
 
+/**
+ * @brief Función principal del programa
+ * @complexity O(N)
+ * 
+ * @return int 
+ */
 int main() {
     int N;
     cout << "Ingrese el número de elementos: ";
