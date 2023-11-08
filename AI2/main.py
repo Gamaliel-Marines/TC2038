@@ -112,6 +112,7 @@ def print_shortest_paths(matrix, cities):
 def main(file_name):
     # Guardar en una variable la ruta del archivo
     route = os.path.join("inputs", file_name)
+    print(f"Archivo: {file_name}")
     try:
         # Leer el archivo y guardar el número de ciudades y la matriz en dos variables
         cities, matriz = read_file(route)
@@ -120,4 +121,5 @@ def main(file_name):
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
-main("input1.txt")
+for i in range(1,5):
+    main(f"input{i}.txt")
