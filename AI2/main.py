@@ -17,19 +17,28 @@ def read_file(file_name):
     - coordinates: List[tuple] - Lista de coordenadas de los nodos.
     """
     with open(file_name, "r") as file:
-        lines = file.readlines()
+        lines = [line.strip() for line in file.readlines()]
 
-    n = int(lines[0].strip())
+    n = int(lines[0])
+    matrix_start = 1
+    matrix_end = matrix_start + n
+    capacity_matrix_start = matrix_end + 1
+    capacity_matrix_end = capacity_matrix_start + n
+    coordinates_start = capacity_matrix_end + 1
+    coordinates_end = -2
+
     adjacency_matrix = [
-        list(map(int, line.strip().split())) for line in lines[1 : n + 1]
+        list(map(int, line.split())) for line in lines[matrix_start:matrix_end]
     ]
     capacity_matrix = [
-        list(map(int, line.strip().split())) for line in lines[n + 1 : 2 * n + 1]
+        list(map(int, line.split()))
+        for line in lines[capacity_matrix_start:capacity_matrix_end]
     ]
     coordinates = [
-        tuple(map(int, line.strip().split(","))) for line in lines[2 * n + 1 : -1]
+        tuple(map(int, line.replace("(", "").replace(")", "").split(",")))
+        for line in lines[coordinates_start:coordinates_end]
     ]
-    new_point = tuple(map(int, lines[-1].strip().split(",")))
+    new_point = tuple(map(int, lines[-1].replace("(", "").replace(")", "").split(",")))
 
     return n, adjacency_matrix, capacity_matrix, coordinates, new_point
 
@@ -129,78 +138,56 @@ def print_shortest_paths(matrix, cities):
 
 
 def tsp(matrix, n):
-    """
-    Resuelve el problema del agente viajero utilizando programación dinámica.
+    memo = [[float("inf") for _ in range(n)] for _ in range(1 << n)]
+    path = [[None for _ in range(n)] for _ in range(1 << n)]
 
-    Parámetros:
-    - matrix: List[List[int]] - Matriz de adyacencia que representa el grafo.
-    - n: int - Número de nodos en el grafo.
-
-    Retorna:
-    - min_cost: int - Costo mínimo para visitar todas las ciudades y regresar a la ciudad de origen.
-    - path: List[int] - Secuencia de nodos representando la ruta óptima.
-    """
-    # Crear una tabla de memorización para almacenar los costos mínimos de visitar cada conjunto de nodos
-    memo = [[None] * n for _ in range(1 << n)]
-    # Crear una tabla para rastrear el camino óptimo
-    path = [[None] * n for _ in range(1 << n)]
-
-    # Función para visitar nodos. "visited" es un bitmask que representa los nodos visitados
     def visit(visited, last):
-        # Si ya visitamos este conjunto de nodos y terminamos en 'last', devolver el costo guardado
-        if memo[visited][last] is not None:
-            return memo[visited][last]
-
-        # Si todos los nodos han sido visitados, devolver la distancia al nodo de inicio (0)
         if visited == (1 << n) - 1:
             return matrix[last][0] if matrix[last][0] > 0 else float("inf")
 
-        # Establecer un costo inicial alto
-        min_cost = float("inf")
-        # Intentar visitar cada nodo
-        for i in range(n):
-            # Si el nodo 'i' no ha sido visitado y hay un camino desde 'last' a 'i'
-            if not visited & (1 << i) and matrix[last][i] > 0:
-                # Calcular el costo de visitar 'i' después de 'last'
-                cost = matrix[last][i] + visit(visited | (1 << i), i)
-                # Actualizar el costo mínimo y el camino
+        if memo[visited][last] != float("inf"):
+            return memo[visited][last]
+
+        for city in range(n):
+            if not visited & (1 << city) and matrix[last][city] > 0:
+                cost = matrix[last][city] + visit(visited | (1 << city), city)
                 if cost < min_cost:
-                    min_cost = cost
-                    path[visited][last] = i
+                    memo[visited][last] = cost
+                    path[visited][last] = city
 
-        # Guardar el costo mínimo en la tabla de memorización
-        memo[visited][last] = min_cost
-        return min_cost
+        return memo[visited][last]
 
-    # Iniciar la visita desde el nodo 0 con solo el nodo 0 visitado
     min_cost = visit(1, 0)
 
-    # Reconstruir el camino óptimo
+    if min_cost == float("inf"):
+        return "No hay un camino que visite todas las ciudades"
+
     optimal_path = []
     last = 0
     visited = 1
-    while True:
-        optimal_path.append(last)
-        next_node = path[visited][last]
-        if next_node is None:
-            break
-        visited |= 1 << next_node
-        last = next_node
-
+    while last is not None:
+        optimal_path.append(chr(ord("A") + last))
+        next_city = path[visited][last]
+        visited |= 1 << last
+        last = next_city
+    optimal_path.append("A")
     return min_cost, optimal_path
 
 
 def main(file_name):
-    # Guardar en una variable la ruta del archivo
     route = os.path.join("inputs", file_name)
     print(f"Archivo: {file_name}")
     try:
-        cities, matrix = read_file(route)
-        print_shortest_paths(matrix, cities)
-        tsp_cost, tsp_path = tsp(matrix, cities)
+        n, adjacency_matrix, capacity_matrix, coordinates, new_point = read_file(route)
+        # print(n)
+        # print(adjacency_matrix)
+        # print(capacity_matrix)
+        # print(coordinates)
+        # print(new_point)
+        print_shortest_paths(adjacency_matrix, n)
+        tsp_cost, tsp_path = tsp(capacity_matrix, n)
         print(f"Costo mínimo del TSP: {tsp_cost}")
         print(f"Ruta del TSP: {tsp_path}")
-
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
