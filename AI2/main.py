@@ -138,40 +138,42 @@ def print_shortest_paths(matrix, cities):
 
 
 def tsp(matrix, n):
-    memo = [[float("inf") for _ in range(n)] for _ in range(1 << n)]
+    memo = [[None for _ in range(n)] for _ in range(1 << n)]
     path = [[None for _ in range(n)] for _ in range(1 << n)]
 
     def visit(visited, last):
-        if visited == (1 << n) - 1:
-            return matrix[last][0] if matrix[last][0] > 0 else float("inf")
-
-        if memo[visited][last] != float("inf"):
+        if memo[visited][last] is not None:
             return memo[visited][last]
 
+        if visited == (1 << n) - 1:
+            return matrix[last][0] if matrix[last][0] > 0 else float('inf')
+
+        min_cost = float('inf')
         for city in range(n):
             if not visited & (1 << city) and matrix[last][city] > 0:
                 cost = matrix[last][city] + visit(visited | (1 << city), city)
                 if cost < min_cost:
-                    memo[visited][last] = cost
+                    min_cost = cost
                     path[visited][last] = city
 
-        return memo[visited][last]
+        memo[visited][last] = min_cost
+        return min_cost
 
     min_cost = visit(1, 0)
-
-    if min_cost == float("inf"):
-        return "No hay un camino que visite todas las ciudades"
 
     optimal_path = []
     last = 0
     visited = 1
-    while last is not None:
-        optimal_path.append(chr(ord("A") + last))
-        next_city = path[visited][last]
+    while True:
+        optimal_path.append(last + 1)  # Sumar 1 para coincidir con el formato de salida esperado (1-indexado)
+        last = path[visited][last]
+        if last is None:
+            break
         visited |= 1 << last
-        last = next_city
-    optimal_path.append("A")
+
+    optimal_path.append(1)  # Añadir el retorno a la ciudad de origen (1-indexado)
     return min_cost, optimal_path
+
 
 
 def main(file_name):
@@ -185,12 +187,12 @@ def main(file_name):
         # print(coordinates)
         # print(new_point)
         print_shortest_paths(adjacency_matrix, n)
-        tsp_cost, tsp_path = tsp(capacity_matrix, n)
+        tsp_cost, tsp_path = tsp(adjacency_matrix, n)
         print(f"Costo mínimo del TSP: {tsp_cost}")
         print(f"Ruta del TSP: {tsp_path}")
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
 
-for i in range(1, 2):
+for i in range(1, 4):
     main(f"input{i}.txt")
