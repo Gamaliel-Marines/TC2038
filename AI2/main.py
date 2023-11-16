@@ -165,13 +165,14 @@ def tsp(matrix, n):
     last = 0
     visited = 1
     while True:
-        optimal_path.append(last + 1)  # Sumar 1 para coincidir con el formato de salida esperado (1-indexado)
+        # Convertir el número a letra según la correspondencia dada
+        optimal_path.append(chr(last + ord('A')))
         last = path[visited][last]
         if last is None:
             break
         visited |= 1 << last
 
-    optimal_path.append(1)  # Añadir el retorno a la ciudad de origen (1-indexado)
+    optimal_path.append('A')  # Añadir el retorno a la ciudad de origen (1-indexado)
     return min_cost, optimal_path
 
 def max_flow(capacity_matrix, n, start, end):
