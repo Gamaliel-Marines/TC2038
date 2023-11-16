@@ -174,6 +174,117 @@ def tsp(matrix, n):
     optimal_path.append(1)  # Añadir el retorno a la ciudad de origen (1-indexado)
     return min_cost, optimal_path
 
+def max_flow(capacity_matrix, n, start, end):
+    """
+    Calcula el flujo máximo en una red dada una matriz de capacidad de transmisión de datos.
+
+    Parámetros:
+    - capacity_matrix: List[List[int]] - Matriz de capacidad de transmisión de datos.
+    - n: int - Número de nodos en la red.
+    - start: int - Nodo de inicio.
+    - end: int - Nodo final.
+
+    Complejidad:
+    - Tiempo: O(E * max_flow), donde E es el número de aristas y max_flow es el flujo máximo.
+
+    Retorna:
+    - max_flow: int - Flujo máximo en la red.
+    """
+
+    # Inicializa el flujo máximo en 0
+    max_flow = 0
+
+    # Mientras haya un camino aumentante
+    while True:
+        # Encuentra un camino aumentante usando BFS
+        path, bottleneck = bfs(capacity_matrix, n, start, end)
+
+        # Si no hay más caminos aumentantes, termina el bucle
+        if not path:
+            break
+
+        # Actualiza la capacidad residual de las aristas en el camino aumentante
+        for i in range(len(path) - 1):
+            u, v = path[i], path[i + 1]
+            capacity_matrix[u][v] -= bottleneck
+            capacity_matrix[v][u] += bottleneck
+
+        # Añade el flujo del camino aumentante al flujo máximo total
+        max_flow += bottleneck
+
+    return max_flow
+
+
+def bfs(capacity_matrix, n, start, end):
+    """
+    Realiza un recorrido BFS para encontrar un camino aumentante en la red.
+
+    Parámetros:
+    - capacity_matrix: List[List[int]] - Matriz de capacidad de transmisión de datos.
+    - n: int - Número de nodos en la red.
+    - start: int - Nodo de inicio.
+    - end: int - Nodo final.
+
+    Retorna:
+    - path: List[int] - Lista de nodos en el camino aumentante.
+    - bottleneck: int - Capacidad mínima de la arista en el camino aumentante.
+    """
+
+    # Inicializa el camino y la capacidad mínima en 0
+    path = []
+    bottleneck = 0
+
+    # Inicializa la lista de nodos visitados
+    visited = [False] * n
+
+    # Utiliza una cola para realizar el recorrido BFS
+    queue = [start]
+    visited[start] = True
+
+    # Inicializa una lista de nodos previos para reconstruir el camino aumentante
+    previous_nodes = [-1] * n
+
+    while queue:
+        current_node = queue.pop(0)
+
+        # Encuentra las aristas no visitadas con capacidad residual positiva
+        for neighbor, capacity in enumerate(capacity_matrix[current_node]):
+            if not visited[neighbor] and capacity > 0:
+                queue.append(neighbor)
+                visited[neighbor] = True
+                previous_nodes[neighbor] = current_node
+
+                # Si llegamos al nodo final, reconstruimos el camino aumentante
+                if neighbor == end:
+                    path = reconstruct_path(previous_nodes, start, end)
+                    bottleneck = min(capacity_matrix[u][v] for u, v in zip(path, path[1:]))
+                    return path, bottleneck
+
+    return path, bottleneck
+
+
+def reconstruct_path(previous_nodes, start, end):
+    """
+    Reconstruye el camino aumentante a partir de los nodos previos.
+
+    Parámetros:
+    - previous_nodes: List[int] - Lista de nodos previos en el recorrido BFS.
+    - start: int - Nodo de inicio.
+    - end: int - Nodo final.
+
+    Retorna:
+    - path: List[int] - Lista de nodos en el camino aumentante.
+    """
+
+    path = []
+    current_node = end
+
+    while current_node != start:
+        path.insert(0, current_node)
+        current_node = previous_nodes[current_node]
+
+    path.insert(0, start)
+    return path
 
 
 def main(file_name):
@@ -190,9 +301,13 @@ def main(file_name):
         tsp_cost, tsp_path = tsp(adjacency_matrix, n)
         print(f"Costo mínimo del TSP: {tsp_cost}")
         print(f"Ruta del TSP: {tsp_path}")
+        max_flow_value = max_flow(capacity_matrix, n, 0, 1)  # Modificar los nodos de inicio y fin según sea necesario
+        print(f"Flujo máximo: {max_flow_value}")
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
 
 for i in range(1, 4):
     main(f"input{i}.txt")
+
+
