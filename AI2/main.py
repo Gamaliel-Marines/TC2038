@@ -1,6 +1,7 @@
 import os
 import heapq
 from itertools import combinations
+import math
 
 
 def read_file(file_name):
@@ -288,27 +289,64 @@ def reconstruct_path(previous_nodes, start, end):
     return path
 
 
+def find_closest_central(coordinates, new_point):
+    """
+    Encuentra la central más cercana geográficamente a una nueva contratación.
+
+    Parámetros:
+    - coordinates: List[tuple] - Lista de coordenadas de las centrales.
+    - new_point: tuple - Coordenadas de la nueva contratación.
+
+    Retorna:
+    - closest_central: int - Índice de la central más cercana.
+    """
+    closest_central = None
+    min_distance = float('inf')
+
+    for i, central_coordinates in enumerate(coordinates):
+        distance = calculate_distance(central_coordinates, new_point)
+        if distance < min_distance:
+            min_distance = distance
+            closest_central = i
+
+    return closest_central
+
+def calculate_distance(coord1, coord2):
+    """
+    Calcula la distancia euclidiana entre dos puntos en el plano.
+
+    Parámetros:
+    - coord1: tuple - Coordenadas del primer punto.
+    - coord2: tuple - Coordenadas del segundo punto.
+
+    Retorna:
+    - distance: float - Distancia entre los dos puntos.
+    """
+    return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
+
 def main(file_name):
     route = os.path.join("inputs", file_name)
     print(f"Archivo: {file_name}")
     try:
-        n, adjacency_matrix, capacity_matrix, coordinates, new_point = read_file(route)
-        # print(n)
-        # print(adjacency_matrix)
-        # print(capacity_matrix)
-        # print(coordinates)
-        # print(new_point)
+        n, adjacency_matrix, capacity_matrix, coordinates, _ = read_file(route)
         print_shortest_paths(adjacency_matrix, n)
         tsp_cost, tsp_path = tsp(adjacency_matrix, n)
         print(f"Costo mínimo del TSP: {tsp_cost}")
         print(f"Ruta del TSP: {tsp_path}")
         max_flow_value = max_flow(capacity_matrix, n, 0, 1)  # Modificar los nodos de inicio y fin según sea necesario
         print(f"Flujo máximo: {max_flow_value}")
+
+        # Assuming you want to find the closest central for each input file
+        new_point = coordinates[-1]  # Use the last coordinates in the list as the new_point
+        closest_central_index = find_closest_central(coordinates[:-1], new_point)  # Exclude the last coordinate
+        print(f"Nueva contratación en coordenadas: {new_point}")
+        print(f"La central más cercana es la central {chr(ord('A') + closest_central_index)}")
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
 
 for i in range(1, 4):
     main(f"input{i}.txt")
+
 
 
