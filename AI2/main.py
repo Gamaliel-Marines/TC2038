@@ -328,7 +328,7 @@ def main(file_name):
     route = os.path.join("inputs", file_name)
     print(f"Archivo: {file_name}")
     try:
-        n, adjacency_matrix, capacity_matrix, coordinates, _ = read_file(route)
+        n, adjacency_matrix, capacity_matrix, coordinates, new_point = read_file(route)
         
         print("\nDistancias más cortas entre cada par de ciudades:\n")
         print_shortest_paths(adjacency_matrix, n)
@@ -340,17 +340,31 @@ def main(file_name):
         max_flow_value = max_flow(capacity_matrix, n, 0, 1)  # Modificar los nodos de inicio y fin según sea necesario
         print(f"\nFlujo máximo: {max_flow_value}")
 
-        # Assuming you want to find the closest central for each input file
-        new_point = coordinates[-1]  # Use the last coordinates in the list as the new_point
-        closest_central_index = find_closest_central(coordinates[:-1], new_point)  # Exclude the last coordinate
-        print(f"\nNueva contratación en coordenadas: {new_point}")
-        print(f"La central más cercana es la central {chr(ord('A') + closest_central_index)}\n")
+        print("\nCoordenadas de las centrales:")
+        for i, coord in enumerate(coordinates):
+            print(f"{chr(ord('A') + i)}: {coord}")
+
+        print("\nCoordenadas de punto de contratación:")
+        print(f"{new_point}")
+
+        # Find the closest central to the new point
+        closest_central_index = find_closest_central(coordinates, new_point)
+        closest_central_coordinates = coordinates[closest_central_index]
+        distance_to_closest_central = calculate_distance(new_point, closest_central_coordinates)
+
+        print("\nSalida:")
+        print(f"Distancia mínima a la central más cercana ({chr(ord('A') + closest_central_index)}): {distance_to_closest_central} km")
+        print(f"Coordenadas de la central más cercana: {closest_central_coordinates}\n")
+
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
-
+# Llamada a la función main con el nuevo punto para probar
 for i in range(1, 4):
     main(f"input{i}.txt")
+
+
+
 
 
 
