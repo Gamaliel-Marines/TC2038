@@ -139,6 +139,27 @@ def print_shortest_paths(matrix, cities):
 
 
 def tsp(matrix, n):
+    """
+    Resuelve el problema del Viajante de Comercio (TSP) para un grafo dado.
+
+    Esta función utiliza programación dinámica para encontrar la ruta más corta que visita
+    cada ciudad exactamente una vez y regresa a la ciudad de origen.
+
+    Parámetros:
+    - matrix: List[List[int]] - Matriz de adyacencia que representa las distancias entre las ciudades.
+    - n: int - Número de ciudades en el grafo.
+
+    Complejidad:
+    - Tiempo: O(n^2 * 2^n), ya que para cada conjunto de ciudades visitadas y para cada última ciudad visitada,
+      calcula la ruta más corta.
+    - Espacio: O(n * 2^n) para la matriz de memoización y la matriz de ruta.
+
+    Retorna:
+    - min_cost: int - Costo mínimo para completar el recorrido del TSP.
+    - optimal_path: List[str] - Lista de ciudades en el orden óptimo de visita, comenzando y terminando
+      en la ciudad de origen.
+    """
+    # Inicialización de la matriz de memoización y la matriz de ruta
     memo = [[None for _ in range(n)] for _ in range(1 << n)]
     path = [[None for _ in range(n)] for _ in range(1 << n)]
 
@@ -146,11 +167,13 @@ def tsp(matrix, n):
         if memo[visited][last] is not None:
             return memo[visited][last]
 
+        # Condición de parada: todas las ciudades han sido visitadas
         if visited == (1 << n) - 1:
-            return matrix[last][0] if matrix[last][0] > 0 else float('inf')
+            return matrix[last][0] if matrix[last][0] > 0 else float("inf")
 
-        min_cost = float('inf')
+        min_cost = float("inf")
         for city in range(n):
+            # Verificar si la ciudad no ha sido visitada y es alcanzable
             if not visited & (1 << city) and matrix[last][city] > 0:
                 cost = matrix[last][city] + visit(visited | (1 << city), city)
                 if cost < min_cost:
@@ -160,21 +183,24 @@ def tsp(matrix, n):
         memo[visited][last] = min_cost
         return min_cost
 
+    # Iniciar la visita desde la ciudad 0
     min_cost = visit(1, 0)
 
+    # Reconstruir el camino óptimo
     optimal_path = []
     last = 0
     visited = 1
     while True:
-        # Convertir el número a letra según la correspondencia dada
-        optimal_path.append(chr(last + ord('A')))
-        last = path[visited][last]
-        if last is None:
+        optimal_path.append(chr(last + ord("A")))  # Convertir número a letra
+        next_city = path[visited][last]
+        if next_city is None:
             break
-        visited |= 1 << last
+        visited |= 1 << next_city
+        last = next_city
 
-    optimal_path.append('A')  # Añadir el retorno a la ciudad de origen (1-indexado)
+    optimal_path.append("A")  # Volver a la ciudad de origen
     return min_cost, optimal_path
+
 
 def max_flow(capacity_matrix, n, start, end):
     """
@@ -259,7 +285,9 @@ def bfs(capacity_matrix, n, start, end):
                 # Si llegamos al nodo final, reconstruimos el camino aumentante
                 if neighbor == end:
                     path = reconstruct_path(previous_nodes, start, end)
-                    bottleneck = min(capacity_matrix[u][v] for u, v in zip(path, path[1:]))
+                    bottleneck = min(
+                        capacity_matrix[u][v] for u, v in zip(path, path[1:])
+                    )
                     return path, bottleneck
 
     return path, bottleneck
@@ -301,7 +329,7 @@ def find_closest_central(coordinates, new_point):
     - closest_central: int - Índice de la central más cercana.
     """
     closest_central = None
-    min_distance = float('inf')
+    min_distance = float("inf")
 
     for i, central_coordinates in enumerate(coordinates):
         distance = calculate_distance(central_coordinates, new_point)
@@ -310,6 +338,7 @@ def find_closest_central(coordinates, new_point):
             closest_central = i
 
     return closest_central
+
 
 def calculate_distance(coord1, coord2):
     """
@@ -324,12 +353,13 @@ def calculate_distance(coord1, coord2):
     """
     return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
 
+
 def main(file_name):
     route = os.path.join("inputs", file_name)
     print(f"Archivo: {file_name}")
     try:
         n, adjacency_matrix, capacity_matrix, coordinates, _ = read_file(route)
-        
+
         print("\nDistancias más cortas entre cada par de ciudades:\n")
         print_shortest_paths(adjacency_matrix, n)
 
@@ -337,21 +367,25 @@ def main(file_name):
         print(f"\nCosto mínimo del TSP: {tsp_cost}")
         print(f"Ruta del TSP: {tsp_path}")
 
-        max_flow_value = max_flow(capacity_matrix, n, 0, 1)  # Modificar los nodos de inicio y fin según sea necesario
+        max_flow_value = max_flow(
+            capacity_matrix, n, 0, 1
+        )  # Modificar los nodos de inicio y fin según sea necesario
         print(f"\nFlujo máximo: {max_flow_value}")
 
         # Assuming you want to find the closest central for each input file
-        new_point = coordinates[-1]  # Use the last coordinates in the list as the new_point
-        closest_central_index = find_closest_central(coordinates[:-1], new_point)  # Exclude the last coordinate
+        new_point = coordinates[
+            -1
+        ]  # Use the last coordinates in the list as the new_point
+        closest_central_index = find_closest_central(
+            coordinates[:-1], new_point
+        )  # Exclude the last coordinate
         print(f"\nNueva contratación en coordenadas: {new_point}")
-        print(f"La central más cercana es la central {chr(ord('A') + closest_central_index)}\n")
+        print(
+            f"La central más cercana es la central {chr(ord('A') + closest_central_index)}\n"
+        )
     except FileNotFoundError:
         print(f"No se pudo encontrar o abrir el archivo {route}.")
 
 
 for i in range(1, 4):
     main(f"input{i}.txt")
-
-
-
-
